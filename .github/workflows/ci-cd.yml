@@ -7,6 +7,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -21,25 +22,16 @@ jobs:
     - name: Build with Maven
       run: mvn clean package -DskipTests
 
-    # DevSecOps Step: Using CLI to avoid JAVA_HOME container errors
-    # DevSecOps Step: Use the CLI directly to ensure it finds your JDK 17 installation
-    - name: Install Snyk CLI
-      uses: snyk/actions/setup@master
-
-    - name: Run Snyk Monitor
-      run: snyk monitor --severity-threshold=high
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
+    # ✅ Single Snyk Monitor Step
     - name: Snyk Security Scan
       uses: snyk/actions/maven@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
-        command: monitor # This fixes the 'test' crash by analyzing in the cloud
+        command: monitor
         args: --severity-threshold=high
 
-    # Docker Steps: Containerize and Host the image
+    # Docker Steps
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
       with:
@@ -51,14 +43,4 @@ jobs:
       with:
         context: .
         push: true
-        # Replace 'your-docker-hub-username' with your actual username if not using secrets for the tag
         tags: ${{ secrets.DOCKER_USERNAME }}/user-identity-service:latest
-    
-    # DevSecOps Step: Using the Snyk Monitor to bypass local CLI execution errors
-    - name: Snyk Security Scan
-      uses: snyk/actions/maven@master
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      with:
-        command: monitor
-        args: --severity-threshold=high
