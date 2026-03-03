@@ -22,8 +22,14 @@ jobs:
       run: mvn clean package -DskipTests
 
     # DevSecOps Step: Using CLI to avoid JAVA_HOME container errors
+    # DevSecOps Step: Use the CLI directly to ensure it finds your JDK 17 installation
     - name: Install Snyk CLI
       uses: snyk/actions/setup@master
+
+    - name: Run Snyk Monitor
+      run: snyk monitor --severity-threshold=high
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
     - name: Snyk Security Scan
       uses: snyk/actions/maven@master
