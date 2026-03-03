@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1️⃣ Checkout Source Code
+    # 1️⃣ Checkout Repository
     - name: Checkout code
       uses: actions/checkout@v3
 
@@ -21,34 +21,46 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    # 3️⃣ Build Application
+    # 3️⃣ Verify Maven Installation
+    - name: Verify Maven
+      run: |
+        which mvn
+        mvn -version
+
+    # 4️⃣ Build Application
     - name: Build with Maven
       run: mvn clean package -DskipTests
 
-    # 4️⃣ Install Snyk CLI (runs on VM, not Docker)
+    # 5️⃣ Clear Maven Cache (prevents corrupted dependency tree issues)
+    - name: Clear Maven Cache
+      run: rm -rf ~/.m2/repository
+
+    # 6️⃣ Install Snyk CLI (VM mode, no Docker container)
     - name: Install Snyk CLI
-      uses: snyk/actions/setup@master
+      uses: snyk/actions/setup@v2
 
-    # 5️⃣ Run Snyk Dependency Monitoring
+    # 7️⃣ Run Snyk Monitor (Debug enabled for stability)
     - name: Run Snyk Monitor
-      run: snyk monitor --severity-threshold=high
+      run: |
+        export MAVEN_OPTS="-Xmx1024m"
+        snyk monitor --all-projects --severity-threshold=high -d
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
-    # 6️⃣ (Optional but Recommended) Fail Build on High Vulnerabilities
-    - name: Run Snyk Test (Fail on High)
-      run: snyk test --severity-threshold=high
+    # 8️⃣ Fail Build on High Vulnerabilities
+    - name: Run Snyk Test
+      run: snyk test --all-projects --severity-threshold=high
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
-    # 7️⃣ Login to Docker Hub
+    # 9️⃣ Login to Docker Hub
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    # 8️⃣ Build and Push Docker Image
+    # 🔟 Build & Push Docker Image
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
       with:
