@@ -25,10 +25,13 @@ jobs:
     - name: Install Snyk CLI
       uses: snyk/actions/setup@master
 
-    - name: Run Snyk Security Scan
-      run: snyk test --severity-threshold=high
+    - name: Snyk Security Scan
+      uses: snyk/actions/maven@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        command: monitor # This fixes the 'test' crash by analyzing in the cloud
+        args: --severity-threshold=high
 
     # Docker Steps: Containerize and Host the image
     - name: Log in to Docker Hub
