@@ -44,3 +44,12 @@ jobs:
         push: true
         # Replace 'your-docker-hub-username' with your actual username if not using secrets for the tag
         tags: ${{ secrets.DOCKER_USERNAME }}/user-identity-service:latest
+    
+    # DevSecOps Step: Using the Snyk Monitor to bypass local CLI execution errors
+    - name: Snyk Security Scan
+      uses: snyk/actions/maven@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        command: monitor
+        args: --severity-threshold=high
