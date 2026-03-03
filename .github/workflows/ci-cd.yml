@@ -27,7 +27,7 @@ jobs:
 
     # 4️⃣ Install Snyk CLI (runs on VM, not Docker)
     - name: Install Snyk CLI
-      uses: snyk/actions/setup@v3
+      uses: snyk/actions/setup@master
 
     # 5️⃣ Run Snyk Dependency Monitoring
     - name: Run Snyk Monitor
