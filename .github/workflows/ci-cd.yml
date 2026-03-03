@@ -22,7 +22,6 @@ jobs:
     - name: Build with Maven
       run: mvn clean package -DskipTests
 
-    # ✅ Correct Snyk Setup
     - name: Install Snyk CLI
       uses: snyk/actions/setup@master
 
