@@ -1,16 +1,16 @@
 # Stage 1: Build the application using Maven
 FROM maven:3.8.4-openjdk-17 AS build
 WORKDIR /app
-# Copy only the pom.xml and source code to keep the build efficient
+# Copy your project files
 COPY pom.xml .
 COPY src ./src
-# Build the application and skip tests for a faster deployment
+# Build the JAR inside the cloud environment
 RUN mvn clean package -DskipTests
 
-# Stage 2: Create the final lightweight runtime image
-FROM openjdk:17-jdk-slim
+# Stage 2: Create the final production image using a supported JDK
+FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
-# Copy the built JAR from the 'build' stage above
+# Copy the built JAR from the first stage
 COPY --from=build /app/target/*.jar app.jar
 
 # Expose the port your Spring Boot app runs on
