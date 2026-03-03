@@ -1,15 +1,20 @@
-# Step 1: Use an official JDK runtime as a parent image
-FROM eclipse-temurin:17-jdk-alpine
-
-# Step 2: Set the working directory inside the container
+# Stage 1: Build the application using Maven
+FROM maven:3.8.4-openjdk-17 AS build
 WORKDIR /app
+# Copy only the pom.xml and source code to keep the build efficient
+COPY pom.xml .
+COPY src ./src
+# Build the application and skip tests for a faster deployment
+RUN mvn clean package -DskipTests
 
-# Step 3: Copy the executable JAR file from your target folder to the container
-# Note: Ensure you run 'mvn clean package' before building the image
-COPY target/*.jar app.jar
+# Stage 2: Create the final lightweight runtime image
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+# Copy the built JAR from the 'build' stage above
+COPY --from=build /app/target/*.jar app.jar
 
-# Step 4: Expose the port your Spring Boot app runs on
+# Expose the port your Spring Boot app runs on
 EXPOSE 8081
 
-# Step 5: Run the JAR file
+# Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
