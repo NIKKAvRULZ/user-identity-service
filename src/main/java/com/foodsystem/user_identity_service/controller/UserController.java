@@ -4,7 +4,6 @@ import com.foodsystem.user_identity_service.dto.LoginRequest;
 import com.foodsystem.user_identity_service.model.User;
 import com.foodsystem.user_identity_service.service.UserService;
 
-import org.apache.catalina.startup.ClassLoaderFactory.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

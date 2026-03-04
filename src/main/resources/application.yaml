@@ -2,7 +2,7 @@ spring:
   application:
     name: user-identity-service
 
-# OpenAPI & Swagger UI Configuration
+# Ensure 'springdoc' is at the top level, same as 'spring'
 springdoc:
   api-docs:
     path: /v3/api-docs

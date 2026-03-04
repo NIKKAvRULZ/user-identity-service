@@ -33,6 +33,7 @@ public class UserService {
 }
 
     // Logic for Profile Retrieval (Used by Order Service)
+    @SuppressWarnings("null")
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
