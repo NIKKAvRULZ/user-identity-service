@@ -21,11 +21,16 @@ public class UserService {
     }
 
     // Logic for Login
-    public Optional<User> login(String username, String password) {
-        return userRepository.findByUsername(username)
-                .filter(user -> user.getPassword().equals(password)); 
-                // Note: In a real app, you'd use BCrypt here for security!
+    public Optional<User> loginUser(String email, String password) {
+    // Find the user by email
+    Optional<User> user = userRepository.findByEmail(email);
+
+    // Verify password (Note: In a real app, use BCrypt.checkpw here)
+    if (user.isPresent() && user.get().getPassword().equals(password)) {
+        return user;
     }
+    return Optional.empty();
+}
 
     // Logic for Profile Retrieval (Used by Order Service)
     public Optional<User> getUserById(Long id) {
