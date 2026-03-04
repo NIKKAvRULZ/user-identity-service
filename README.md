@@ -17,6 +17,7 @@ The User Identity Service is a Spring Boot-based microservice responsible for us
 <details>
 <summary><b>1. Working Prototype: Live Swagger UI</b> (Expand)</summary>
 <br>
+  
 ![swagger-ui-screenshot.png](docs/swagger-ui-screenshot.png) *(Note: Replace with your actual screenshot)*
 * This screenshot shows the live, interactive Swagger UI documentation for the User Identity Service. It allows you to test the registration, login, and user profile endpoints directly in your browser.
 </details>
@@ -24,6 +25,7 @@ The User Identity Service is a Spring Boot-based microservice responsible for us
 <details>
 <summary><b>2. DevSecOps: Snyk Vulnerability Scan</b> (Expand)</summary>
 <br>
+  
 ![snyk-dashboard-screenshot.png](docs/snyk-dashboard-screenshot.png) *(Note: Replace with your actual screenshot)*
 * This screenshot from the Snyk dashboard confirms that the project's `pom.xml` and `Dockerfile` have been scanned. It shows **2 High Severity** findings that are documented for risk mitigation in the final project report.
 </details>
@@ -31,6 +33,7 @@ The User Identity Service is a Spring Boot-based microservice responsible for us
 <details>
 <summary><b>3. Managed Orchestration: Render Deployment Status</b> (Expand)</summary>
 <br>
+  
 ![render-dashboard-screenshot.png](docs/render-dashboard-screenshot.png) *(Note: Replace with your actual screenshot)*
 * This screenshot confirms that the User Identity Service is **Live** and running on **Render's managed cloud environment**. It successfully binds to port **8080** and has completed the deployment pipeline.
 </details>
