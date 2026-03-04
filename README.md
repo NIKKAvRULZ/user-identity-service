@@ -1,5 +1,6 @@
 # User Identity Service 🛡️
-![repo-banner.png](docs/repo-banner.png) 
+![repo-banner.png](docs/repo-banner.png)
+
 Part of the **Food Ordering System** Microservices Project for SLIIT Cloud Computing.
 
 ## 🚀 Overview
