@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
 
     // 1. Handle Duplicate Username/Email
     @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
-    public ResponseEntity<Map<String, String>> handleDataIntegrity(Exception ex) {
+    public ResponseEntity<Map<String, String>> handleDataIntegrity(org.springframework.dao.DataIntegrityViolationException ex) {
         Map<String, String> body = new HashMap<>();
         body.put("message", "Registration Conflict: That username or email is already taken.");
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
