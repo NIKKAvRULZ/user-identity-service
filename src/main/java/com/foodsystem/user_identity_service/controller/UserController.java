@@ -23,13 +23,13 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    @Operation(summary = "Register a new user node [cite: 19]")
+    @Operation(summary = "Register a new user node")
     public ResponseEntity<User> register(@RequestBody User user) {
         return ResponseEntity.ok(userService.registerUser(user));
     }
     
     @PostMapping("/login")
-    @Operation(summary = "Authenticate user and fetch integrated network deals [cite: 54]")
+    @Operation(summary = "Authenticate user and fetch integrated network deals")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
         Optional<User> user = userService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
 
@@ -52,7 +52,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get user profile (Used by Order Service for Delivery Address) [cite: 45]")
+    @Operation(summary = "Get user profile (Used by Order Service for Delivery Address)")
     public ResponseEntity<User> getUserProfile(@PathVariable Long id) {
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
@@ -60,13 +60,13 @@ public class UserController {
     }
 
     @GetMapping("/network-deals")
-    @Operation(summary = "INTEGRATION: Manual fetch of deals from Catalog Microservice [cite: 54]")
+    @Operation(summary = "INTEGRATION: Manual fetch of deals from Catalog Microservice")
     public ResponseEntity<String> getNetworkDeals() {
         return ResponseEntity.ok(userService.getCatalogDeals());
     }
 
     @GetMapping("/order-status/{id}")
-    @Operation(summary = "INTEGRATION: Fetch live status from Order Microservice [cite: 11, 54]")
+    @Operation(summary = "INTEGRATION: Fetch live status from Order Microservice")
     public ResponseEntity<String> getLiveOrderStatus(@PathVariable Long id) {
         // This demonstrates the secondary handshake with the Order Node
         return ResponseEntity.ok(userService.getRecentOrderStatus(id));
