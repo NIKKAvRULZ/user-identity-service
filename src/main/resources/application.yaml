@@ -2,7 +2,7 @@ spring:
   application:
     name: user-identity-service
 
-# Ensure 'springdoc' is at the top level, same as 'spring'
+# OpenAPI & Swagger UI Configuration
 springdoc:
   api-docs:
     path: /v3/api-docs
@@ -10,3 +10,9 @@ springdoc:
     path: /swagger-ui.html
     operations-sorter: alpha
   writer-with-default-pretty-printer: true
+
+# Inter-Service Communication Endpoints
+services:
+  # Uses Environment Variables from Render, with a fallback for local testing
+  catalog-node: ${CATALOG_SERVICE_URL:https://gourmet-catalog.onrender.com}
+  order-node: ${ORDER_SERVICE_URL:https://gourmet-order.onrender.com}

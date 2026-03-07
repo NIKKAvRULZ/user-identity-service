@@ -5,6 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.ResourceAccessException;
+
+import java.net.ResponseCache;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +30,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
-    // 3. Catch-all for everything else
+    // 3. Handle Inter-Service Communication Failures
+    @ExceptionHandler(ResourceAccessException.class)
+    public ResponseEntity<Map<String, String>> handleServiceUnavailable(ResourceAccessException ex) {
+        Map<String, String> body = new HashMap<>();
+        body.put("message","Integration Error: Unable to communicate with dependent services. Please try again later.");
+        return new ResponseEntity<>(body, HttpStatus.SERVICE_UNAVAILABLE);
+    }
+    // 4. Catch-all for everything else
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneralException(Exception ex) {
         Map<String, String> body = new HashMap<>();
