@@ -17,21 +17,36 @@ public class UserService {
     @Autowired
     private RestTemplate restTemplate;
 
-    // The URL is pulled from environment variables in application.yaml
+    // External Service URLs from environment variables in application.yaml
     @Value("${services.catalog-node}")
     private String catalogUrl;
 
-    // Integration Logic: Fetch data from the Catalog Service
+    @Value("${services.order-node}")
+    private String orderUrl;
+
+    // --- Integration Logic: Catalog Service ---
     public String getCatalogDeals() {
         try {
-            // Easiest way to communicate: GET request to teammate's endpoint 
+            // GET request to teammate's Catalog endpoint
             return restTemplate.getForObject(catalogUrl + "/api/deals/daily", String.class);
         } catch (Exception e) {
-            // Graceful failure if teammate's Render service is "sleeping" 
+            // Graceful failure if Catalog Node is sleeping
             return "Unable to fetch daily deals from Catalog Service.";
         }
     }
-    // Logic for Registration
+
+    // --- NEW Integration Logic: Order Service ---
+    public String getRecentOrderStatus(Long userId) {
+        try {
+            // GET request to teammate's Order endpoint
+            return restTemplate.getForObject(orderUrl + "/api/orders/status/" + userId, String.class);
+        } catch (Exception e) {
+            // Graceful failure if Order Node is sleeping
+            return "Unable to fetch order status from Order Service.";
+        }
+    }
+
+    // --- Core Identity Logic ---
     public User registerUser(User user) {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already in use!");
@@ -39,19 +54,14 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // Logic for Login
     public Optional<User> loginUser(String email, String password) {
-    // Find the user by email
-    Optional<User> user = userRepository.findByEmail(email);
-    // Verify password (Note: In a real app, use BCrypt.checkpw here)
-    if (user.isPresent() && user.get().getPassword().equals(password)) {
-        return user;
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent() && user.get().getPassword().equals(password)) {
+            return user;
+        }
+        return Optional.empty();
     }
-    return Optional.empty();
-    
-}
 
-    // Logic for Profile Retrieval (Used by Order Service)
     @SuppressWarnings("null")
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
