@@ -1,6 +1,6 @@
 server:
-  # This allows the cloud provider to set the port, defaulting to 8085 if not found
   port: ${PORT:8085}
+  forward-headers-strategy: framework
 
 spring:
   application:
