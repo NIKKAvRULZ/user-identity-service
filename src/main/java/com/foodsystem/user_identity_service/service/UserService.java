@@ -62,7 +62,8 @@ public class UserService {
         // 2. Trigger Welcome Email via Notification Service
             try {
             // Log the final URL to verify there are no double slashes
-            String welcomeApiUrl = notificationUrl + "/api/v1/notify/welcome/" + registeredUser.getId();
+            String baseUrl = notificationUrl.endsWith("/") ? notificationUrl.substring(0, notificationUrl.length() - 1) : notificationUrl;
+            String welcomeApiUrl = baseUrl + "/api/v1/notify/welcome/" + registeredUser.getId();
             System.out.println("DEBUG: Sending request to: " + welcomeApiUrl);
 
             // Explicitly use the String class for the response
