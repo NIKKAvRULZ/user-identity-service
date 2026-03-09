@@ -51,6 +51,15 @@ public class UserController {
         }
     }
 
+    @GetMapping("/ping")
+    public ResponseEntity<Map<String, String>> ping() {
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "UP");
+        response.put("service", "Identity-Service");
+        response.put("timestamp", String.valueOf(System.currentTimeMillis()));
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Get user profile (Used by Order Service for Delivery Address)")
     public ResponseEntity<User> getUserProfile(@PathVariable Long id) {

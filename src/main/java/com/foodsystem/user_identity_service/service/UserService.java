@@ -4,13 +4,8 @@ import com.foodsystem.user_identity_service.model.User;
 import com.foodsystem.user_identity_service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -50,15 +45,7 @@ public class UserService {
             return "Unable to fetch order status from Order Service.";
         }
     }
-
-    @GetMapping("/ping")
-    public ResponseEntity<Map<String, String>> ping() {
-        Map<String, String> response = new HashMap<>();
-        response.put("status", "UP");
-        response.put("service", "Identity-Service");
-        response.put("timestamp", String.valueOf(System.currentTimeMillis()));
-        return ResponseEntity.ok(response);
-    }
+    
     // --- Core Identity Logic ---
     public User registerUser(User user) {
         if (userRepository.existsByEmail(user.getEmail())) {
