@@ -1,20 +1,28 @@
-# Stage 1: Build the application using Maven
+# Stage 1: Build stage
 FROM maven:3.8.4-openjdk-17 AS build
 WORKDIR /app
-# Copy your project files
-COPY pom.xml .
-COPY src ./src
-# Build the JAR inside the cloud environment
-RUN mvn clean package -DskipTests
 
-# Stage 2: Create the final production image using a supported JDK
+# Step 1: Copy only the pom.xml first
+COPY pom.xml .
+
+# Step 2: Download dependencies (this is the "heavy" part)
+# This layer will be cached and only re-run if you change pom.xml
+RUN mvn dependency:go-offline -B
+
+# Step 3: Now copy the source code
+COPY src ./src
+
+# Step 4: Package the app
+# Since dependencies are already in the image, this will be very fast
+RUN mvn package -DskipTests
+
+# Stage 2: Final Run stage
 FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
-# Copy the built JAR from the first stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose the port your Spring Boot app runs on
-EXPOSE 8081
+# Use the environment variable for port binding (Crucial for Render/Azure)
+ENV PORT=8085
+EXPOSE 8085
 
-# Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
