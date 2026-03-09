@@ -34,3 +34,8 @@ build/
 
 .fake
 .env
+
+*.stubs
+.git
+.gitignore
+.m2
