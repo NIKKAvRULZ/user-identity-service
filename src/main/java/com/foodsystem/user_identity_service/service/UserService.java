@@ -54,6 +54,15 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public void deleteUserById(Long userId) {
+    if (userRepository.existsById(userId)) {
+        userRepository.deleteById(userId);
+        System.out.println("SUCCESS: User with ID " + userId + " deleted from Render DB.");
+    } else {
+        throw new RuntimeException("User not found with ID: " + userId);
+    }
+}
+
     public Optional<User> loginUser(String email, String password) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isPresent() && user.get().getPassword().equals(password)) {
