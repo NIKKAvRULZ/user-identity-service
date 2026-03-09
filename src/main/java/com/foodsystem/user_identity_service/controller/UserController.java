@@ -65,4 +65,10 @@ public class UserController {
     public ResponseEntity<String> getDeals() {
         return ResponseEntity.ok(userService.getCatalogDeals());
     }
+
+    // Ping endpoint for keep-alive (cron-job.org)
+    @GetMapping("/ping")
+    public ResponseEntity<String> ping() {
+        return ResponseEntity.ok("Service is awake!");
+    }
 }
