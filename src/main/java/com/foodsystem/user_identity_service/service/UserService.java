@@ -24,6 +24,10 @@ public class UserService {
     @Value("${services.order-node}")
     private String orderUrl;
 
+    @Value("${services.notification-node}") 
+    private String notificationUrl;
+
+
     // --- Integration Logic: Catalog Service ---
     public String getCatalogDeals() {
         try {
@@ -35,8 +39,8 @@ public class UserService {
         }
     }
 
-    // --- NEW Integration Logic: Order Service ---
-    public String getRecentOrderStatus(Long userId) {
+    // --- Integration Logic: Order Service (Updated to String ID) ---
+    public String getRecentOrderStatus(String userId) { // Changed Long to String
         try {
             // GET request to teammate's Order endpoint
             return restTemplate.getForObject(orderUrl + "/api/orders/status/" + userId, String.class);
@@ -51,17 +55,39 @@ public class UserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already in use!");
         }
-        return userRepository.save(user);
+        
+        // 1. Save user to MongoDB Atlas
+        User registeredUser = userRepository.save(user);
+        
+        // 2. Trigger Welcome Email via Notification Service
+            try {
+            // Log the final URL to verify there are no double slashes
+            String welcomeApiUrl = notificationUrl + "/api/v1/notify/welcome/" + registeredUser.getId();
+            System.out.println("DEBUG: Sending request to: " + welcomeApiUrl);
+
+            // Explicitly use the String class for the response
+            String response = restTemplate.getForObject(welcomeApiUrl, String.class);
+            System.out.println("DEBUG: Notification Service Response: " + response);
+            
+        } catch (Exception e) {
+            System.err.println("CRITICAL: Notification Handshake Failed!");
+            System.err.println("Error Detail: " + e.getMessage());
+            // This will print the full stack trace so we can see the exact error code
+            e.printStackTrace(); 
     }
 
-    public void deleteUserById(Long userId) {
-    if (userRepository.existsById(userId)) {
-        userRepository.deleteById(userId);
-        System.out.println("SUCCESS: User with ID " + userId + " deleted from Render DB.");
-    } else {
-        throw new RuntimeException("User not found with ID: " + userId);
+        return registeredUser;
     }
-}
+
+    // --- Delete Logic (Updated to String ID) ---
+    public void deleteUserById(String userId) { // Changed Long to String
+        if (userRepository.existsById(userId)) {
+            userRepository.deleteById(userId);
+            System.out.println("SUCCESS: User with ID " + userId + " deleted from MongoDB Atlas.");
+        } else {
+            throw new RuntimeException("User not found with ID: " + userId);
+        }
+    }
 
     public Optional<User> loginUser(String email, String password) {
         Optional<User> user = userRepository.findByEmail(email);
@@ -71,8 +97,9 @@ public class UserService {
         return Optional.empty();
     }
 
+    // --- Fetch Logic (Updated to String ID) ---
     @SuppressWarnings("null")
-    public Optional<User> getUserById(Long id) {
+    public Optional<User> getUserById(String id) { // Changed Long to String
         return userRepository.findById(id);
     }
 }

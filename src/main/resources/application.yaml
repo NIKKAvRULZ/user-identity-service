@@ -1,6 +1,14 @@
+server:
+  port: 8085
 spring:
   application:
     name: user-identity-service
+  
+  # MongoDB Configuration
+  data:
+    mongodb:
+      # Format: ${VARIABLE_NAME:FALLBACK_VALUE}
+      uri: ${MONGODB_URI:mongodb+srv://nithika151_db_user:nithika123@cluster0.kd7jqcp.mongodb.net/user_db?retryWrites=true&w=majority}
 
 # OpenAPI & Swagger UI Configuration
 springdoc:
@@ -13,6 +21,6 @@ springdoc:
 
 # Inter-Service Communication Endpoints
 services:
-  # Uses Environment Variables from Render, with a fallback for local testing
-  catalog-node: ${CATALOG_SERVICE_URL:https://gourmet-catalog.onrender.com}
-  order-node: ${ORDER_SERVICE_URL:https://gourmet-order.onrender.com}
+  catalog-node: ${CATALOG_SERVICE_URL:https://menu-service-production-048a.up.railway.app}
+  order-node: ${ORDER_SERVICE_URL:https://order-service-production-5615.up.railway.app}
+  notification-node: ${NOTIFICATION_SERVICE_URL:https://notification-service-production-e192.up.railway.app/}
