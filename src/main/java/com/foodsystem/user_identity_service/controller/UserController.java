@@ -51,12 +51,6 @@ public class UserController {
         }
     }
 
-    @GetMapping("/")
-    @Operation(summary = "Get all registered users (For Admin Use)")
-    public ResponseEntity<Iterable<User>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
-    }
-
     @GetMapping("/{id}")
     @Operation(summary = "Get user profile (Used by Order Service for Delivery Address)")
     public ResponseEntity<User> getUserProfile(@PathVariable Long id) {
