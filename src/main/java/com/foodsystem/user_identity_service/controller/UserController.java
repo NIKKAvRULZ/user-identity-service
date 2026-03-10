@@ -74,6 +74,12 @@ public class UserController {
         return ResponseEntity.ok(userService.getRecentOrderStatus(id));
     }
 
+    // Get Filtered Orders from Order Node
+    @GetMapping("/{id}/orders")
+    public ResponseEntity<String> getUserOrders(@PathVariable String id) {
+        return ResponseEntity.ok(userService.getUserOrders(id));
+    }
+
     // Get Daily Deals from Catalog Node
     @GetMapping("/deals")
     public ResponseEntity<String> getDeals() {

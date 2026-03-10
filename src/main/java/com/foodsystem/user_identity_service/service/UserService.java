@@ -43,6 +43,29 @@ public class UserService {
         }
     }
 
+    // --- Integration Logic: Order Service ---
+    public String getUserOrders(String userId) {
+        try {
+            String cleanOrderUrl = orderUrl.endsWith("/") ? orderUrl.substring(0, orderUrl.length() - 1) : orderUrl;
+            String response = restTemplate.getForObject(cleanOrderUrl + "/orders", String.class);
+
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            java.util.List<java.util.Map<String, Object>> allOrders = mapper.readValue(
+                    response,
+                    new com.fasterxml.jackson.core.type.TypeReference<java.util.List<java.util.Map<String, Object>>>() {
+                    });
+
+            java.util.List<java.util.Map<String, Object>> userOrders = allOrders.stream()
+                    .filter(order -> userId.equals(String.valueOf(order.get("userId"))))
+                    .collect(java.util.stream.Collectors.toList());
+
+            return mapper.writeValueAsString(userOrders);
+        } catch (Exception e) {
+            System.err.println("Failed to fetch/filter orders: " + e.getMessage());
+            return "[]";
+        }
+    }
+
     // --- Integration Logic: Payment Service (Updated to String ID) ---
     public String getRecentOrderStatus(String userId) { // Changed Long to String
         try {
