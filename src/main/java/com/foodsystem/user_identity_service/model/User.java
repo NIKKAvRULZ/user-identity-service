@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotBlank;
 public class User {
 
     @Id // MongoDB will automatically generate a String ObjectId if left null
-    private String id; 
+    private String id;
 
     @NotBlank(message = "Username is required")
     @Indexed(unique = true) // Replaces @Column(unique = true) for MongoDB
@@ -26,8 +26,11 @@ public class User {
     @NotBlank(message = "Delivery address is required")
     private String deliveryAddress;
 
+    private boolean isVegan;
+
     // Default constructor
-    public User() {}
+    public User() {
+    }
 
     // Getters and Setters
     public String getId() {
@@ -68,5 +71,13 @@ public class User {
 
     public void setDeliveryAddress(String deliveryAddress) {
         this.deliveryAddress = deliveryAddress;
+    }
+
+    public boolean isVegan() {
+        return isVegan;
+    }
+
+    public void setVegan(boolean vegan) {
+        this.isVegan = vegan;
     }
 }

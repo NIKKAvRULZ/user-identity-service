@@ -133,4 +133,19 @@ public class UserService {
     public Optional<User> getUserById(String id) { // Changed Long to String
         return userRepository.findById(id);
     }
+
+    // --- Update Logic ---
+    public User updateUserProfile(String userId, User updatedUser) {
+        return userRepository.findById(userId).map(user -> {
+            user.setUsername(updatedUser.getUsername());
+            user.setEmail(updatedUser.getEmail());
+            user.setDeliveryAddress(updatedUser.getDeliveryAddress());
+            user.setVegan(updatedUser.isVegan());
+            // Update password if provided
+            if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+                user.setPassword(updatedUser.getPassword());
+            }
+            return userRepository.save(user);
+        }).orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+    }
 }

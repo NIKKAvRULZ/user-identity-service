@@ -57,6 +57,17 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // Update User Profile
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUserProfile(@PathVariable String id, @RequestBody User updatedUser) {
+        try {
+            User savedUser = userService.updateUserProfile(id, updatedUser);
+            return ResponseEntity.ok(savedUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
+
     // Delete User (Updated to String)
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable String id) { // Changed Long to String
