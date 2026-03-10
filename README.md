@@ -42,16 +42,27 @@ The User Identity Service is a Spring Boot-based microservice responsible for us
 
 ## 🛠️ Tech Stack
 * **Framework:** Spring Boot 3
-* **Database:** H2 In-Memory Database
+* **Database:** MongoDB
+* **Authentication:** JWT (JSON Web Tokens)
 * **Containerization:** Docker (Multi-stage build)
-* **CI/CD:** GitHub Actions
-* **Cloud Hosting:** Render
-* **Security Scanning:** Snyk (DevSecOps)
+* **API Documentation:** OpenAPI / Swagger
 
-## 📦 Features
-- **User Registration:** `POST /api/users/register`
-- **User Login:** `POST /api/users/login`
-- **User Verification:** `GET /api/users/{id}` (Used by Order Management Service)
+## 📦 API Endpoints
+Detailed interactive documentation for the REST APIs can be found on our live Swagger UIs:
+
+**Base URL:** `https://user-identity-service.onrender.com/api/users`
+**Swagger UI:** [https://user-identity-service.onrender.com/swagger-ui.html](https://user-identity-service.onrender.com/swagger-ui.html)  
+
+- `POST /register`: Register a new user
+- `POST /login`: Authenticate a user and get a JWT token
+- `GET /{id}`: Get user details by ID
+- `GET /`: Get all users (Admin)
+- `PUT /{id}`: Update user profile
+- `DELETE /{id}`: Delete user
+- `GET /{id}/order-status`: Get recent order status
+- `GET /{id}/orders`: Get filtered orders for a user
+- `GET /deals`: Get daily catalog deals
+- `GET /ping`: Health check endpoint
 
 ## 🏗️ DevOps & Deployment
 This service implements a full CI/CD pipeline:
