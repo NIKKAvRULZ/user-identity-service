@@ -24,58 +24,65 @@ public class UserService {
     @Value("${services.order-node}")
     private String orderUrl;
 
-    @Value("${services.notification-node}") 
+    @Value("${services.notification-node}")
     private String notificationUrl;
 
+    @Value("${services.payment-node}")
+    private String paymentUrl;
 
     // --- Integration Logic: Catalog Service ---
     public String getCatalogDeals() {
         try {
             // GET request to teammate's Catalog endpoint
-            return restTemplate.getForObject(catalogUrl + "/api/deals/daily", String.class);
+            String cleanCatalogUrl = catalogUrl.endsWith("/") ? catalogUrl.substring(0, catalogUrl.length() - 1)
+                    : catalogUrl;
+            return restTemplate.getForObject(cleanCatalogUrl + "/menu/items", String.class);
         } catch (Exception e) {
             // Graceful failure if Catalog Node is sleeping
             return "Unable to fetch daily deals from Catalog Service.";
         }
     }
 
-    // --- Integration Logic: Order Service (Updated to String ID) ---
+    // --- Integration Logic: Payment Service (Updated to String ID) ---
     public String getRecentOrderStatus(String userId) { // Changed Long to String
         try {
-            // GET request to teammate's Order endpoint
-            return restTemplate.getForObject(orderUrl + "/api/orders/status/" + userId, String.class);
+            // GET request to teammate's Payment endpoint to retrieve user payments
+            String cleanPaymentUrl = paymentUrl.endsWith("/") ? paymentUrl.substring(0, paymentUrl.length() - 1)
+                    : paymentUrl;
+            return restTemplate.getForObject(cleanPaymentUrl + "/api/payments/user/" + userId, String.class);
         } catch (Exception e) {
-            // Graceful failure if Order Node is sleeping
-            return "Unable to fetch order status from Order Service.";
+            // Graceful failure if Payment Node is sleeping
+            return "Unable to fetch order status from Payment Service.";
         }
     }
-    
+
     // --- Core Identity Logic ---
     public User registerUser(User user) {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already in use!");
         }
-        
+
         // 1. Save user to MongoDB Atlas
         User registeredUser = userRepository.save(user);
-        
+
         // 2. Trigger Welcome Email via Notification Service
-            try {
+        try {
             // Log the final URL to verify there are no double slashes
-            String baseUrl = notificationUrl.endsWith("/") ? notificationUrl.substring(0, notificationUrl.length() - 1) : notificationUrl;
+            String baseUrl = notificationUrl.endsWith("/") ? notificationUrl.substring(0, notificationUrl.length() - 1)
+                    : notificationUrl;
             String welcomeApiUrl = baseUrl + "/api/v1/notify/welcome/" + registeredUser.getId();
             System.out.println("DEBUG: Sending request to: " + welcomeApiUrl);
 
             // Explicitly use the String class for the response
             String response = restTemplate.getForObject(welcomeApiUrl, String.class);
             System.out.println("DEBUG: Notification Service Response: " + response);
-            
+
         } catch (Exception e) {
             System.err.println("CRITICAL: Notification Handshake Failed!");
             System.err.println("Error Detail: " + e.getMessage());
             // This will print the full stack trace so we can see the exact error code
-            e.printStackTrace(); 
-    }
+            e.printStackTrace();
+        }
 
         return registeredUser;
     }

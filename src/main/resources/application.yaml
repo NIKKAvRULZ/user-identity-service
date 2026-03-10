@@ -30,3 +30,4 @@ services:
   catalog-node: ${CATALOG_SERVICE_URL:https://menu-service-production-048a.up.railway.app}
   order-node: ${ORDER_SERVICE_URL:https://order-service-production-5615.up.railway.app}
   notification-node: ${NOTIFICATION_SERVICE_URL:https://notification-service-production-e192.up.railway.app/}
+  payment-node: ${PAYMENT_SERVICE_URL:https://food-order-payment-service-production.up.railway.app}
