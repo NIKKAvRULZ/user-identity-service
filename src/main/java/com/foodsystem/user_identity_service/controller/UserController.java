@@ -57,6 +57,12 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // Get All Users (Admin)
+    @GetMapping
+    public ResponseEntity<?> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
     // Update User Profile
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUserProfile(@PathVariable String id, @RequestBody User updatedUser) {

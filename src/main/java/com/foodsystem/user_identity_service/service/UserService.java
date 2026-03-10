@@ -128,6 +128,11 @@ public class UserService {
         return Optional.empty();
     }
 
+    // --- Admin List All Users ---
+    public java.util.List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
     // --- Fetch Logic (Updated to String ID) ---
     @SuppressWarnings("null")
     public Optional<User> getUserById(String id) { // Changed Long to String
