@@ -2,6 +2,7 @@ package com.foodsystem.user_identity_service.controller;
 
 import com.foodsystem.user_identity_service.model.User;
 import com.foodsystem.user_identity_service.service.UserService;
+import com.foodsystem.user_identity_service.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     // Register User
     @PostMapping("/register")
@@ -30,9 +34,19 @@ public class UserController {
     // Login User
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestParam String email, @RequestParam String password) {
-        Optional<User> user = userService.loginUser(email, password);
-        return user.map(ResponseEntity::ok)
-                   .orElseGet(() -> ResponseEntity.status(401).body(null));
+        Optional<User> userOpt = userService.loginUser(email, password);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            String token = jwtUtil.generateToken(user.getUsername(), user.getId());
+
+            java.util.Map<String, Object> response = new java.util.HashMap<>();
+            response.put("token", token);
+            response.put("user", user);
+
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(401).body("Invalid credentials");
+        }
     }
 
     // Get User by ID (Updated to String)
